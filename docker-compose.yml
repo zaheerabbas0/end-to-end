@@ -3,8 +3,6 @@ version: "3.8"
 services:
   frontend:
     image: zaheer00901/frontend-app:latest
-    ports:
-      - "3000:3000"  # Expose frontend on port 3000
     deploy:
       replicas: 2
       restart_policy:
@@ -14,8 +12,6 @@ services:
 
   backend:
     image: zaheer00901/backend-app:latest
-    ports:
-      - "5000:5000"
     deploy:
       replicas: 2
       restart_policy:
