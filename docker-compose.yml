@@ -27,6 +27,8 @@ services:
         condition: on-failure
     networks:
       - app-network
+    ports:
+      - "5000:5000"   
 
   nginx:
     image: nginx:latest
