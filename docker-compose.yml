@@ -1,4 +1,3 @@
-
 configs:
   nginx_config:
     file: ./nginx/nginx.conf

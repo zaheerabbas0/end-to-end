@@ -11,4 +11,5 @@ WORKDIR /app
 COPY --from=build /app/build /app/build
 
 EXPOSE 3000
-CMD ["npx", "serve", "-s", "build", "-l", "3000"]
+RUN npm install -g serve
+CMD ["serve", "-s", "build", "--listen", "3000"]
