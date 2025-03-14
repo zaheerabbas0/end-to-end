@@ -1,30 +1,14 @@
-# Use Node.js 16 (recommended for better compatibility)
-FROM node:16-alpine
-
-# Set the working directory inside the container
+FROM node:18-alpine AS build
 WORKDIR /app
 
-# Copy package.json and package-lock.json first (for better caching)
-COPY package.json package-lock.json ./
-
-# Install dependencies using npm ci (more reliable for production)
+COPY package-lock.json package.json ./
 RUN npm ci --legacy-peer-deps
 
-# Copy the rest of the application files
 COPY . .
-
-# Build the React app for production
 RUN npm run build
+FROM node:18-alpine AS production
+WORKDIR /app
+COPY --from=build /app/build /app/build
 
-# Install 'serve' globally to serve the built files
-RUN npm install -g serve
-
-# Expose the frontend port
 EXPOSE 3000
-
-# Healthcheck to ensure the container is healthy
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s \
-  CMD curl -f http://localhost:3000 || exit 1
-
-# Command to serve the React app
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["npx", "serve", "-s", "build", "-l", "3000"]
