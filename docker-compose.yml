@@ -15,7 +15,7 @@ services:
   backend:
     image: zaheer00901/backend-app:latest
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: on-failure
     networks:
