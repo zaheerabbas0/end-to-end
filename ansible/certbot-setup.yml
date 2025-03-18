@@ -1,0 +1,28 @@
+- name: Automate SSL with Certbot
+  hosts: webserver
+  become: yes
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - certbot
+          - python3-certbot-nginx
+        state: present
+        update_cache: yes
+
+    - name: Stop Nginx container (Docker Swarm)
+      command: docker service scale app_stack_nginx=0
+
+    - name: Obtain SSL certificate using Certbot standalone mode
+      command: certbot certonly --standalone -d www.endtoend.space -d endtoend.space --non-interactive --agree-tos -m za00901@gmail.com
+
+    - name: Start Nginx container again
+      shell: "docker service update --force app_stack_nginx"
+
+    - name: Set up automatic renewal cron job
+      cron:
+        name: "Renew Let's Encrypt SSL"
+        job: "docker service scale app_stack_nginx=0 && certbot renew --quiet && docker service update --force app_stack_nginx"
+        minute: "0"
+        hour: "3"
